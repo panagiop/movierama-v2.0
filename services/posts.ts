@@ -1,6 +1,6 @@
 import { QueryParamsSortFields, QueryParamsSortOrder } from '@/types';
-import { PrismaPostRepository } from '../repository/PrismaPostRepository';
-import { PostRepository } from '../repository/interfaces/PostRepository';
+import { PrismaPostRepository } from '../repositories/PrismaPostRepository';
+import { PostRepository } from '../repositories/interfaces/PostRepository';
 
 const postRepository: PostRepository = new PrismaPostRepository();
 
