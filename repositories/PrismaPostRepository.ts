@@ -13,14 +13,11 @@ export function PrismaPostRepository(): PostRepository {
             sortOrder: QueryParamsSortOrder
         ) {
             if (
-                sortBy !== 'createdAt' &&
-                sortBy !== 'numberOfLikes' &&
-                sortBy !== 'numberOfDislikes'
+                (sortBy !== 'createdAt' &&
+                    sortBy !== 'numberOfLikes' &&
+                    sortBy !== 'numberOfDislikes') ||
+                (sortOrder !== 'asc' && sortOrder !== 'desc')
             ) {
-                return { posts: [] };
-            }
-
-            if (sortOrder !== 'asc' && sortOrder !== 'desc') {
                 return { posts: [] };
             }
 
