@@ -29,13 +29,16 @@ export async function POST(req: Request) {
             throw error;
         }
 
-        return NextResponse.json({
-            user: {
-                id: newUser?.id,
-                name: newUser?.name,
-                email: newUser?.email
-            }
-        });
+        return NextResponse.json(
+            {
+                user: {
+                    id: newUser?.id,
+                    name: newUser?.name,
+                    email: newUser?.email
+                }
+            },
+            { status: 200 }
+        );
     } catch (error: any) {
         return NextResponse.json(
             {

@@ -20,7 +20,7 @@ export async function GET(
         if (error) {
             throw error;
         }
-        return NextResponse.json({ posts });
+        return NextResponse.json({ posts }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(
             {
