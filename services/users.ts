@@ -1,102 +1,52 @@
-import {
-    PostModel,
-    QueryParamsSortFields,
-    QueryParamsSortOrder
-} from '@/types';
-import { prisma } from '../db/prisma';
-import { createHash } from 'crypto';
+import { QueryParamsSortFields, QueryParamsSortOrder } from '@/types';
+import { UserRepository } from '../repository/interfaces/UserRepository';
+import { PrismaUserRepository } from '../repository/PrismaUserRepository';
+
+const userRepository: UserRepository = new PrismaUserRepository();
 
 export async function getPostsByUserId({
     userId,
     sortBy,
     sortOrder
 }: {
-    userId: string;
+    userId: number;
     sortBy: QueryParamsSortFields;
     sortOrder: QueryParamsSortOrder;
 }) {
-    if (
-        sortBy !== 'createdAt' &&
-        sortBy !== 'numberOfLikes' &&
-        sortBy !== 'numberOfDislikes'
-    ) {
-        return { posts: [] };
-    }
-
-    if (sortOrder !== 'asc' && sortOrder !== 'desc') {
-        return { posts: [] };
-    }
-
     try {
-        const { error } = await getUserById(userId);
-
-        if (error) {
-            throw error;
+        const result = await userRepository.getPostsByUserId(
+            userId,
+            sortBy,
+            sortOrder
+        );
+        if ('error' in result) {
+            throw result.error;
         }
-
-        const posts = (await prisma.post.findMany({
-            include: {
-                votes: true,
-                author: { select: { name: true } }
-            },
-            where: {
-                author: { id: +userId }
-            },
-            orderBy: {
-                [sortBy]: sortOrder
-            }
-        })) as PostModel[];
-
-        if (!posts?.length) {
-            throw `No posts found for user id: ${userId}`;
-        }
-
-        return { posts };
+        return { posts: result.posts };
     } catch (error) {
         return { error };
     }
 }
 
-export async function getUserById(id: string) {
-    if (!id) {
-        throw 'No id found';
-    }
-
+export async function getUserById(id: number) {
     try {
-        const user = await prisma.user.findFirst({
-            where: {
-                id: +id
-            },
-            select: { name: true, id: true, email: true }
-        });
-
-        if (!user) {
-            throw 'No valid user found';
+        const result = await userRepository.getUserById(id);
+        if ('error' in result) {
+            throw result.error;
         }
-
-        return { user };
+        return { user: result.user };
     } catch (error) {
         return { error };
     }
 }
 
 export async function getUserByEmail(email: string) {
-    if (!email) {
-        throw 'No email found';
-    }
-
     try {
-        const user = await prisma.user.findFirst({
-            where: {
-                email
-            }
-        });
-
-        if (!user) {
-            throw 'No user found';
+        const result = await userRepository.getUserByEmail(email);
+        if ('error' in result) {
+            throw result.error;
         }
-
-        return { user };
+        return { user: result.user };
     } catch (error) {
         return { error };
     }
@@ -112,25 +62,16 @@ export async function createUser({
     password: string;
 }) {
     try {
-        const { user } = await getUserByEmail(email);
-
-        if (user) {
-            throw 'User already exists';
-        }
-
-        const hashedPassword = createHash('sha256')
-            .update(password)
-            .digest('hex');
-
-        const newUser = await prisma.user.create({
-            data: {
-                name,
-                email: email.toLowerCase(),
-                password: hashedPassword
-            }
+        const result = await userRepository.createUser({
+            name,
+            email,
+            password
         });
 
-        return { newUser };
+        if ('error' in result) {
+            throw result.error;
+        }
+        return { newUser: result.newUser };
     } catch (error) {
         return { error };
     }

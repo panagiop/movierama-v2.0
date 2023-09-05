@@ -3,10 +3,14 @@ import { Post, PostVote } from '@prisma/client';
 export type PostModel = Post & {
     numberOfLikes: number;
     numberOfDislikes: number;
-    votes: PostVote[];
-    author: {
+    votes?: PostVote[];
+    author?: {
         name: string;
     };
+    createdAt: Date;
+    content: string | null;
+    title: string;
+    id: number;
 };
 
 export type QueryParamsSortFields =

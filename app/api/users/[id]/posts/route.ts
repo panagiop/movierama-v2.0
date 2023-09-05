@@ -4,7 +4,7 @@ import { QueryParamsSortFields, QueryParamsSortOrder } from '@/types';
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: number } }
 ) {
     try {
         const { posts, error } = await getPostsByUserId({

@@ -3,7 +3,7 @@ import { getPostById } from '@/services/posts';
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: number } }
 ) {
     try {
         const { post, error } = await getPostById(params?.id);
@@ -14,10 +14,7 @@ export async function GET(
 
         return NextResponse.json(
             {
-                postId: post?.id,
-                title: post?.title,
-                content: post?.content,
-                authorId: post?.authorId
+                post
             },
             { status: 200 }
         );

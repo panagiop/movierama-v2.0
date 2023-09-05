@@ -8,13 +8,13 @@ import { getPostById, likePost } from '@/services/posts';
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: number } }
 ) {
     const session = await getServerSession(authOptions);
 
     try {
         const { error: hasGetUserByIdError } = await getUserById(
-            (session?.user?.id).toString()
+            session?.user?.id
         );
 
         const { error: hasGetPostByIdError } = await getPostById(params?.id);
@@ -24,6 +24,7 @@ export async function PUT(
         }
 
         if (hasGetUserByIdError) {
+            console.log('dsau8ads789dsa78ads789ads');
             throw hasGetUserByIdError;
         }
 
@@ -38,7 +39,7 @@ export async function PUT(
             return NextResponse.json(resolvedResponse, { status: 404 });
         }
 
-        if (resolvedResponse.authorId === session?.user?.id) {
+        if (resolvedResponse.post.authorId === +session?.user?.id) {
             return NextResponse.json(
                 {
                     message:
@@ -49,7 +50,7 @@ export async function PUT(
         }
 
         const result: VoteResult = await likePost({
-            postId: +params?.id,
+            postId: params?.id,
             userId: session?.user?.id
         });
 

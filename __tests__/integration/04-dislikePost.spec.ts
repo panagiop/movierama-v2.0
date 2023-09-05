@@ -1,6 +1,6 @@
 import { VoteResult } from '../../types';
 import { prisma } from '../../db/prisma';
-import { createPost, dislikePost, likePost } from '../../services/posts';
+import { createPost, dislikePost } from '../../services/posts';
 import { createUser } from '../../services/users';
 
 let newUser1: any;

@@ -8,7 +8,7 @@ import { dislikePost, getPostById } from '@/services/posts';
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: number } }
 ) {
     const session = await getServerSession(authOptions);
 
@@ -38,7 +38,7 @@ export async function PUT(
             return NextResponse.json(resolvedResponse, { status: 404 });
         }
 
-        if (resolvedResponse.authorId === session?.user?.id) {
+        if (resolvedResponse.post.authorId === session?.user?.id) {
             return NextResponse.json(
                 {
                     message:
