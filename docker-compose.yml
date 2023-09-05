@@ -1,0 +1,29 @@
+version: '3.8'
+networks:
+    my-net:
+
+services:
+    postgres:
+        image: postgres:13
+        container_name: postgres
+        restart: always
+        ports:
+            - '5432:5432'
+        volumes:
+            - database-data:/var/lib/postgresql/data/
+        env_file:
+            - .env.prod
+        networks:
+            my-net:
+    web:
+        build: .
+        ports:
+            - '3000:3000'
+        depends_on:
+            - postgres
+        env_file:
+            - .env.prod
+        networks:
+            my-net:
+volumes:
+    database-data:

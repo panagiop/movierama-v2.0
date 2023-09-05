@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  password String
+  posts Post[]
+  role Role   @default(USER)
+  votes PostVote[]
+
+  @@index([email])
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String?
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+  createdAt DateTime @default(now())
+  votes PostVote[]
+  numberOfLikes   Int      
+  numberOfDislikes Int   
+
+  @@index([createdAt])
+  @@index([numberOfLikes])
+  @@index([numberOfDislikes])
+}
+
+model PostVote {
+  post Post @relation(fields: [postId], references: [id])
+  postId  Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int 
+  value Int // accepted values are: 1 (for like) and -1 (for dislike)
+
+  @@id([postId, userId])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
