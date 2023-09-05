@@ -2,7 +2,7 @@ import { QueryParamsSortFields, QueryParamsSortOrder } from '@/types';
 import { UserRepository } from '../repositories/interfaces/UserRepository';
 import { PrismaUserRepository } from '../repositories/PrismaUserRepository';
 
-const userRepository: UserRepository = new PrismaUserRepository();
+const userRepository: UserRepository = PrismaUserRepository();
 
 export async function getPostsByUserId({
     userId,
